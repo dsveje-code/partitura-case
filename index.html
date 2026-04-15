@@ -56,23 +56,42 @@
     return;
   }
 
-  let currentY = window.scrollY;
-  let targetY = window.scrollY;
-  let rafId = 0;
+  const root = document.documentElement;
+  const state = {
+    startY: window.scrollY,
+    targetY: window.scrollY,
+    startTime: 0,
+    rafId: 0,
+    duration: 920,
+    wheelMultiplier: 0.9
+  };
 
-  const animateScroll = () => {
-    const delta = targetY - currentY;
+  root.style.scrollBehavior = 'auto';
 
-    if (Math.abs(delta) < 0.5) {
-      currentY = targetY;
-      rafId = 0;
-      window.scrollTo(0, targetY);
+  const easeOutQuint = t => 1 - Math.pow(1 - t, 5);
+
+  const getMaxScroll = () => Math.max(0, root.scrollHeight - window.innerHeight);
+
+  const normalizeDelta = event => {
+    if (event.deltaMode === 1) return event.deltaY * 16;
+    if (event.deltaMode === 2) return event.deltaY * window.innerHeight;
+    return event.deltaY;
+  };
+
+  const step = now => {
+    const progress = Math.min(1, (now - state.startTime) / state.duration);
+    const easedProgress = easeOutQuint(progress);
+    const nextY = state.startY + (state.targetY - state.startY) * easedProgress;
+
+    window.scrollTo(0, nextY);
+
+    if (progress < 1 && Math.abs(state.targetY - nextY) > 0.5) {
+      state.rafId = requestAnimationFrame(step);
       return;
     }
 
-    currentY += delta * 0.14;
-    window.scrollTo(0, currentY);
-    rafId = window.requestAnimationFrame(animateScroll);
+    window.scrollTo(0, state.targetY);
+    state.rafId = 0;
   };
 
   window.addEventListener('wheel', event => {
@@ -80,19 +99,28 @@
       return;
     }
 
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    const maxScroll = getMaxScroll();
     if (maxScroll <= 0) {
       return;
     }
 
     event.preventDefault();
-    currentY = window.scrollY;
-    targetY = Math.max(0, Math.min(maxScroll, targetY + event.deltaY));
+    const deltaY = normalizeDelta(event) * state.wheelMultiplier;
+    state.startY = window.scrollY;
+    state.targetY = Math.max(0, Math.min(maxScroll, state.targetY + deltaY));
+    state.startTime = performance.now();
 
-    if (!rafId) {
-      rafId = window.requestAnimationFrame(animateScroll);
+    if (!state.rafId) {
+      state.rafId = requestAnimationFrame(step);
     }
   }, { passive: false });
+
+  window.addEventListener('scroll', () => {
+    if (!state.rafId) {
+      state.startY = window.scrollY;
+      state.targetY = window.scrollY;
+    }
+  }, { passive: true });
 })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">

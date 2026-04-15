@@ -46,6 +46,55 @@
   window.addEventListener('pageshow', restoreScrollPosition);
 })();
 </script>
+<script>
+(() => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return;
+  }
+
+  if (!window.matchMedia('(pointer: fine)').matches) {
+    return;
+  }
+
+  let currentY = window.scrollY;
+  let targetY = window.scrollY;
+  let rafId = 0;
+
+  const animateScroll = () => {
+    const delta = targetY - currentY;
+
+    if (Math.abs(delta) < 0.5) {
+      currentY = targetY;
+      rafId = 0;
+      window.scrollTo(0, targetY);
+      return;
+    }
+
+    currentY += delta * 0.14;
+    window.scrollTo(0, currentY);
+    rafId = window.requestAnimationFrame(animateScroll);
+  };
+
+  window.addEventListener('wheel', event => {
+    if (event.ctrlKey) {
+      return;
+    }
+
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+    if (maxScroll <= 0) {
+      return;
+    }
+
+    event.preventDefault();
+    currentY = window.scrollY;
+    targetY = Math.max(0, Math.min(maxScroll, targetY + event.deltaY));
+
+    if (!rafId) {
+      rafId = window.requestAnimationFrame(animateScroll);
+    }
+  }, { passive: false });
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">

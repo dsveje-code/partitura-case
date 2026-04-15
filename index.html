@@ -451,6 +451,18 @@ p.body-20 .paragraph + .paragraph{
   transform:none;
 }
 
+.hero-stagger{
+  opacity:0;
+  transform:translateY(10px);
+  transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1);
+  transition-delay:var(--stagger-delay,0ms);
+}
+
+.reveal.visible .hero-stagger{
+  opacity:var(--stagger-opacity,1);
+  transform:none;
+}
+
 /* ===== RESPONSIVE ===== */
 @media(max-width:1600px){
   .text-body{
@@ -536,15 +548,15 @@ p.body-20 .paragraph + .paragraph{
 <!-- ===== HERO ===== -->
 <section class="hero reveal">
   <div class="hero__top">
-    <div class="hero__top-meta">
+    <div class="hero__top-meta hero-stagger" style="--stagger-delay:0ms;">
       <div class="body-20">Поляков Данила</div>
       <div class="body-20">2023—2025</div>
     </div>
   </div>
   <div class="hero__main">
-    <h1 class="hero__title heading-1">Продуктовый дизайнер с техническим бэкграундом.<br>Разбираюсь не только в интерфейсах, но и в процессах, которые за ними стоят.</h1>
+    <h1 class="hero__title heading-1 hero-stagger" style="--stagger-delay:120ms;">Продуктовый дизайнер с техническим бэкграундом.<br>Разбираюсь не только в интерфейсах, но и в процессах, которые за ними стоят.</h1>
   </div>
-  <div class="hero__meta">
+  <div class="hero__meta hero-stagger" style="--stagger-delay:240ms;">
     <div class="hero__meta-label"><div class="body-20">Специализация</div></div>
     <div class="hero__meta-main">
       <div class="hero__meta-value"><div class="body-20">UX/UI · Продуктовый дизайн</div></div>
@@ -764,6 +776,24 @@ p.body-20 .paragraph + .paragraph{
 
 <script>
 (function(){
+  document.querySelectorAll('.section-split.reveal').forEach(section => {
+    const leftHeading = section.querySelector('.section-split__left .heading-2');
+    if (leftHeading) {
+      leftHeading.classList.add('hero-stagger');
+      leftHeading.style.setProperty('--stagger-delay', '0ms');
+      leftHeading.style.setProperty('--stagger-opacity', '.5');
+    }
+
+    section.querySelectorAll('.section-split__right > *').forEach((el, index) => {
+      el.classList.add('hero-stagger');
+
+      if (!el.style.getPropertyValue('--stagger-delay')) {
+        const delay = Math.min((index + 1) * 120, 600);
+        el.style.setProperty('--stagger-delay', `${delay}ms`);
+      }
+    });
+  });
+
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });

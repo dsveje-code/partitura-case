@@ -362,6 +362,8 @@ p.body-20 .paragraph + .paragraph{
   flex-direction:column;
 }
 
+.table-rows--no-mobile-bottom{}
+
 .table-row{
   display:grid;
   grid-template-columns:316px minmax(0,1fr);
@@ -532,6 +534,9 @@ p.body-20 .paragraph + .paragraph{
   .img-grid-2{
     grid-template-columns:1fr;
   }
+  .table-rows--no-mobile-bottom .table-row:last-child{
+    border-bottom:none;
+  }
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -574,7 +579,7 @@ p.body-20 .paragraph + .paragraph{
   <div class="section-split__right">
     <h2 class="heading-2">ERP-платформа для бизнес-процессов.</h2>
     <p class="text-body body-20">PARTITURA — платформа для проектирования исполняемых бизнес-процессов. Модули описания доменных областей, управления BPMN, отладки и генерации интерфейсов обеспечивают Backend Driven UI подход.</p>
-    <div class="table-rows">
+    <div class="table-rows table-rows--no-mobile-bottom">
       <div class="table-row">
         <div class="table-row__label body-20">Пользователи</div>
         <div class="table-row__value body-20">Бизнес-аналитики и менеджеры проектных команд, которым нужен быстрый TTM, вслед за меняющимися бизнес-процессами клиентов.</div>
@@ -671,7 +676,7 @@ p.body-20 .paragraph + .paragraph{
   <div class="section-split__left"><div class="heading-2">Регламент «Понимание задачи»</div></div>
   <div class="section-split__right">
     <h2 class="heading-2">Дизайн — это не только интерфейсы.</h2>
-    <div class="table-rows">
+    <div class="table-rows table-rows--no-mobile-bottom">
       <div class="table-row">
         <div class="table-row__label body-20">Проблема</div>
         <div class="table-row__value body-20">В ТЗ от бизнес-аналитиков было много пробелов — описание исходной проблемы, сущности и доступные данные. Не складывалась картинка конечного результата.</div>

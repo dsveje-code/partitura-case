@@ -4,6 +4,48 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Данила Поляков — Продуктовый дизайнер</title>
+<script>
+(() => {
+  const scrollKey = `scroll:${window.location.pathname}`;
+  let restoreDone = false;
+
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+
+  const saveScrollPosition = () => {
+    sessionStorage.setItem(scrollKey, String(window.scrollY));
+  };
+
+  const restoreScrollPosition = () => {
+    if (restoreDone || window.location.hash) {
+      return;
+    }
+
+    const savedY = Number(sessionStorage.getItem(scrollKey));
+    if (!Number.isFinite(savedY)) {
+      return;
+    }
+
+    restoreDone = true;
+    const root = document.documentElement;
+    const previousBehavior = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+
+    window.scrollTo(0, savedY);
+    requestAnimationFrame(() => {
+      window.scrollTo(0, savedY);
+      root.style.scrollBehavior = previousBehavior;
+    });
+  };
+
+  window.addEventListener('scroll', saveScrollPosition, { passive: true });
+  window.addEventListener('pagehide', saveScrollPosition);
+  window.addEventListener('beforeunload', saveScrollPosition);
+  window.addEventListener('load', restoreScrollPosition);
+  window.addEventListener('pageshow', restoreScrollPosition);
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">

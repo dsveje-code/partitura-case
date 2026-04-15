@@ -1,0 +1,15 @@
+*
+!.gitignore
+!index.html
+!Assets/
+Assets/*
+!Assets/Ядро проблемы.png
+!Assets/Системные изменения-left.png
+!Assets/Системные изменения-right.png
+!Assets/Системные изменения-main.png
+!Assets/Пример работы с задачей-scheme2.png
+!Assets/Пример работы с задачей-main.png
+!Assets/Пример работы с задачей-left.png
+!Assets/Пример работы с задачей-right.png
+!Assets/Помимо основного продукта-1.png
+!Assets/Помимо основного продукта-2.png
